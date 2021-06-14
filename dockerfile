@@ -1,7 +1,6 @@
 #
 # Ubuntu Dockerfile
 #
-# https://github.com/dockerfile/ubuntu
 #
 
 # Pull base image.
