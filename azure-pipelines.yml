@@ -79,7 +79,7 @@ stages:
 # Deploy Stage
 - stage: DeployACR
   displayName: Deploy image to ACR
-  dependsOn: Build
+  dependsOn: PullScan
   condition: succeeded()
   jobs:
   - deployment: Deploy
