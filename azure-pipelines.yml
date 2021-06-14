@@ -1,12 +1,14 @@
-# Docker
-# Build a Docker image
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+# Multi-Stage pipeline which builds a Docker image, scan it with Snyk, have Snyk report reviewed by security team before pushing image to ACR 
 
-trigger:
-- main
+name: $(BuildDefinitionName)_$(date:yyyMMdd)$(rev:.r)
+
+trigger: none
+# - master
 
 resources:
 - repo: self
+
+pr: none
 
 # Linux OS self-hosted Agent Pool
 pool: 
@@ -15,21 +17,22 @@ pool:
   - agent.os -equals Linux 
 
 variables:
-  tag: '$(Build.BuildId)'
+- group: PRC382-Variables
 
-stages:
+
+# Build Stage
+stages: 
 - stage: Build
-  displayName: Build image
+  displayName: Build and scan Linux image 
   jobs:
   - job: Build
-    displayName: Build
-
+    displayName: Build and scan Linux image
     steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/dockerfile'
-        tags: |
-          $(tag)
+    
 
+    # Move created image to the Staging Directory 
+    - task: CmdLine@2
+      inputs:
+        script: |
+          docker pull $(imageRepository2):$(latestTag)
+          docker image save $(imageRepository2):$(latestTag) -o $(Build.ArtifactStagingDirectory)/$(imageRepository2)
