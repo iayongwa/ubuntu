@@ -22,11 +22,11 @@ variables:
 
 # Build Stage
 stages: 
-- stage: Build
-  displayName: Build and scan Linux image 
+- stage: PullScan
+  displayName: Pull image from GitHub and scan it 
   jobs:
-  - job: Build
-    displayName: Build and scan Linux image
+  - job: PullScan
+    displayName: Pull image from GitHub and scan it
     steps:
     
 
@@ -36,3 +36,72 @@ stages:
         script: |
           docker pull $(imageRepository2):$(latestTag)
           docker image save $(imageRepository2):$(latestTag) -o $(Build.ArtifactStagingDirectory)/$(imageRepository2)
+
+    # Scan image using Snyk App
+    - task: SnykSecurityScan@0
+      inputs:
+        serviceConnectionEndpoint: $(serviceConnectionEndpoint)
+        testType: 'container'
+        dockerImageName: $(imageRepository2):$(latestTag)
+        dockerfilePath: $(dockerfilePath1)
+        monitorOnBuild: true
+        failOnIssues: false
+        projectName: 'rt_ist_aks_poc'
+        organization: '5b84ba14-9267-4ea8-8223-ebbbf98277ac'
+       # additionalArguments: 'cccc'
+
+    # Copy the Snyk scan report to Staging Directory
+    - task: CopyFiles@2
+      displayName: Copy image and Snyk report to Artifact Staging 
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        Contents: |
+          report*.json
+        TargetFolder: $(Build.ArtifactStagingDirectory)/SnykReport    
+    
+    # Publish image to Staging Directory so that it can be consumed by Deploy Stage
+    - task: PublishBuildArtifacts@1
+      displayName: Publish latest image 
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/$(imageRepository2)
+        ArtifactName: LatestImage
+        Parallel: true
+        ParallelCount: 10
+        StoreAsTar: true
+    
+    # Publish Snyk Report so that it can be downloaded by Security Team
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Snyk report for Security Team
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/SnykReport
+        ArtifactName: SnykReport
+
+# Deploy Stage
+- stage: DeployACR
+  displayName: Deploy image to ACR
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy image to ACR
+    environment: DeployACR
+    timeoutInMinutes: 360
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none
+
+          # Download Artifact from Build Stage
+          - download: current
+            artifact: LatestImage
+            displayName: Download artifact containing latest image from Build Stage
+
+          # Push image to Azure Container Registry (ACR) 
+          - task: Docker@2
+            displayName: Push the docker image to ACR
+            inputs:
+              command: push
+              repository: $(imageRepository2)
+              dockerfile: $(dockerfilePath1)
+              containerRegistry: $(dockerRegistryServiceConnection)
