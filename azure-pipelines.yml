@@ -102,5 +102,5 @@ stages:
             inputs:
               command: push
               repository: ubuntu
-              arguments: acrrtidevsprc38201.azurecr.io/ubuntu/Ubuntu:latest
               containerRegistry: $(dockerRegistryServiceConnection)
+              tags: $(latest)
