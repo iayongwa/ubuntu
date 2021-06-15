@@ -43,7 +43,6 @@ stages:
         serviceConnectionEndpoint: $(serviceConnectionEndpoint)
         testType: 'container'
         dockerImageName: $(imageRepository2):$(latestTag)
-        dockerfilePath: $(Build.SourcesDirectory)
         monitorOnBuild: true
         failOnIssues: false
         projectName: 'rt_ist_aks_poc'
