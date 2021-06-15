@@ -75,31 +75,38 @@ stages:
         PathtoPublish: $(Build.ArtifactStagingDirectory)/SnykReport
         ArtifactName: SnykReport
 
-# Deploy Stage
-- stage: DeployACR
-  displayName: Deploy image to ACR
-  dependsOn: PullScan
-  condition: succeeded()
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy image to ACR
-    environment: DeployACR
-    timeoutInMinutes: 360
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - checkout: none
+    - task: Docker@2
+      displayName: Push the docker image to ACR
+      inputs:
+        command: push
+        repository: iayongwa/ubuntu
+        containerRegistry: $(dockerRegistryServiceConnection)
 
-          # Download Artifact from Build Stage
-          - download: current
-            artifact: LatestImage
-            displayName: Download artifact containing latest image from Build Stage
+# # Deploy Stage
+# - stage: DeployACR
+#   displayName: Deploy image to ACR
+#   dependsOn: PullScan
+#   condition: succeeded()
+#   jobs:
+#   - deployment: Deploy
+#     displayName: Deploy image to ACR
+#     environment: DeployACR
+#     timeoutInMinutes: 360
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - checkout: none
 
-          # Push image to Azure Container Registry (ACR) 
-          - task: Docker@2
-            displayName: Push the docker image to ACR
-            inputs:
-              command: push
-              repository: ubuntu:latest
-              containerRegistry: $(dockerRegistryServiceConnection)
+#           # Download Artifact from Build Stage
+#           - download: current
+#             artifact: LatestImage
+#             displayName: Download artifact containing latest image from Build Stage
+
+#           # Push image to Azure Container Registry (ACR) 
+#           - task: Docker@2
+#             displayName: Push the docker image to ACR
+#             inputs:
+#               command: push
+#               repository: ubuntu:latest
+#               containerRegistry: $(dockerRegistryServiceConnection)
