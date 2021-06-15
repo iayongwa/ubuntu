@@ -80,7 +80,7 @@ stages:
       inputs:
         script: |
           az acr login --name $(containerRegistry)
-          docker push $(containerRegistry)/$(imageRepository1):$(latestTag)
+          docker push $(containerRegistry)/ubuntu:latestTag
 
 # # Deploy Stage
 # - stage: DeployACR
