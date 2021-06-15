@@ -79,7 +79,7 @@ stages:
       displayName: Push the docker image to ACR
       inputs:
         command: push
-        repository: iayongwa/ubuntu
+        repository: ubuntu
         containerRegistry: $(dockerRegistryServiceConnection)
 
 # # Deploy Stage
