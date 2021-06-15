@@ -79,7 +79,8 @@ stages:
     - task: CmdLine@2
       inputs:
         script: |
-          docker push acrrtidevsprc38201.azurecr.io/ubuntu/ubuntu:latest
+          az acr login --name $(containerRegistry)
+          docker push $(containerRegistry)/$(imageRepository1):$(latestTag)
 
 # # Deploy Stage
 # - stage: DeployACR
