@@ -102,5 +102,5 @@ stages:
             inputs:
               command: push
               repository: ubuntu
-              arguments: ubuntu:latest
+              arguments: docker push ubuntu:latest
               containerRegistry: $(dockerRegistryServiceConnection)
