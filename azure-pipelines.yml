@@ -101,5 +101,5 @@ stages:
             displayName: Push the docker image to ACR
             inputs:
               command: push
-              repository: latest
+              repository: ubuntu:latest
               containerRegistry: $(dockerRegistryServiceConnection)
