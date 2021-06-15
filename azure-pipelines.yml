@@ -30,19 +30,19 @@ stages:
     steps:
     
 
-    # Move created image to the Staging Directory 
-    - task: CmdLine@2
-      inputs:
-        script: |
-          docker pull $(imageRepository2):$(latestTag)
-          docker image save $(imageRepository2):$(latestTag) -o $(Build.ArtifactStagingDirectory)/$(imageRepository2)
+    # # Move created image to the Staging Directory 
+    # - task: CmdLine@2
+    #   inputs:
+    #     script: |
+    #       docker pull $(imageRepository2):$(latestTag)
+    #       docker image save $(imageRepository2):$(latestTag) -o $(Build.ArtifactStagingDirectory)/$(imageRepository2)
 
     # Scan image using Snyk App
     - task: SnykSecurityScan@0
       inputs:
         serviceConnectionEndpoint: $(serviceConnectionEndpoint)
         testType: 'container'
-        dockerImageName: $(imageRepository2):$(latestTag)
+        dockerImageName: ubuntu:latest
         monitorOnBuild: true
         failOnIssues: false
         projectName: $(projectName)
