@@ -75,12 +75,11 @@ stages:
         PathtoPublish: $(Build.ArtifactStagingDirectory)/SnykReport
         ArtifactName: SnykReport
 
-    - task: Docker@2
-      displayName: Push the docker image to ACR
+# Move created image to the Staging Directory 
+    - task: CmdLine@2
       inputs:
-        command: push
-        repository: ubuntu
-        containerRegistry: $(dockerRegistryServiceConnection)
+        script: |
+          docker push ubuntu:latest
 
 # # Deploy Stage
 # - stage: DeployACR
