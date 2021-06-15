@@ -79,7 +79,7 @@ stages:
     - task: CmdLine@2
       inputs:
         script: |
-          docker push ubuntu:latest
+          docker push acrrtidevsprc38201.azurecr.io/ubuntu/ubuntu:latest
 
 # # Deploy Stage
 # - stage: DeployACR
