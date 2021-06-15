@@ -42,7 +42,7 @@ stages:
       inputs:
         serviceConnectionEndpoint: $(serviceConnectionEndpoint)
         testType: 'container'
-        dockerImageName: ubuntu:latest
+        dockerImageName: ubuntu
         monitorOnBuild: true
         failOnIssues: false
         projectName: $(projectName)
