@@ -102,5 +102,5 @@ stages:
             inputs:
               command: push
               repository: ubuntu
+              arguments: :latest
               containerRegistry: $(dockerRegistryServiceConnection)
-              tags: $(latest)
