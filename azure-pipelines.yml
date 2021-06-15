@@ -45,8 +45,8 @@ stages:
         dockerImageName: $(imageRepository2):$(latestTag)
         monitorOnBuild: true
         failOnIssues: false
-        projectName: 'rt_ist_aks_poc'
-        organization: '5b84ba14-9267-4ea8-8223-ebbbf98277ac'
+        projectName: $(projectName)
+        organization: $(organization)
        # additionalArguments: 'cccc'
 
     # Copy the Snyk scan report to Staging Directory
@@ -102,5 +102,4 @@ stages:
             inputs:
               command: push
               repository: $(imageRepository2)
-              dockerfile: $(dockerfilePath1)
               containerRegistry: $(dockerRegistryServiceConnection)
