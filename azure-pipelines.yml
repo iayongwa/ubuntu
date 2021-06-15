@@ -79,7 +79,6 @@ stages:
     - task: CmdLine@2
       inputs:
         script: |
-          az acr login --name $(containerRegistry)
           docker push $(containerRegistry)/ubuntu:latest
 
 # # Deploy Stage
