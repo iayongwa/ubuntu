@@ -51,7 +51,7 @@ stages:
 
     # Copy the Snyk scan report to Staging Directory
     - task: CopyFiles@2
-      displayName: Copy image and Snyk report to Artifact Staging 
+      displayName: Copy Snyk report to Artifact Staging 
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         Contents: |
@@ -62,7 +62,7 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: Publish latest image 
       inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)/$(imageRepository2)
+        PathtoPublish: $(Build.ArtifactStagingDirectory)
         ArtifactName: LatestImage
         Parallel: true
         ParallelCount: 10
