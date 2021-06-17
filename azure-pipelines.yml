@@ -40,10 +40,9 @@ stages:
           snyk auth $(SNYK_TOKEN)
           npm install -g npm
           npm install -g snyk snyk-to-html
-          snyk test --severity-threshold=low --docker ubuntu:latest 
-          snyk test --json > SnykReport.json
-          snyk container monitor ubuntu:latest
-          snyk test -i SnykReport.json -o $(Build.ArtifactStagingDirectory)
+          snyk container test ubuntu:latest
+          snyk container test --json SnykReport.json
+          snyk test ubuntu:latest --json-file-output=$(Build.ArtifactStagingDirectory)
 
     # # Scan image using Snyk App
     # - task: SnykSecurityScan@0
@@ -62,14 +61,14 @@ stages:
       inputs:
         sourceFolder: $(Agent.TempDirectory)
         Contents: |
-          report*.json
+          *.json
         TargetFolder: $(Build.ArtifactStagingDirectory)/SnykReport    
     
     # Publish Snyk Report so that it can be downloaded by Security Team
     - task: PublishBuildArtifacts@1
       displayName: Publish Snyk report for Security Team
       inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)/SnykReport
+        PathtoPublish: $(Build.ArtifactStagingDirectory)
         ArtifactName: SnykReport
 
     # Push image to Azure Container Registry (ACR) 
