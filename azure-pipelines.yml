@@ -34,8 +34,7 @@ stages:
       inputs:
         script: |
           docker pull ubuntu:latest
-          docker tag ubuntu:latest $(containerRegistry)/ubuntu:latest1
-          docker image save $(containerRegistry)/ubuntuext:latest1 -o $(Build.ArtifactStagingDirectory)
+        # docker image save $(containerRegistry)/ubuntuext:latest -o $(Build.ArtifactStagingDirectory)
 
         # Scan image using Snyk App
     - task: SnykSecurityScan@0
@@ -106,4 +105,4 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 docker images
-                docker push $(containerRegistry)/ubuntu:latest1
+                docker push $(containerRegistry)/ubuntu:latest
