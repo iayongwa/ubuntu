@@ -19,25 +19,24 @@ pool:
 variables:
 - group: PRC382-Variables
 
-
 # Build Stage
 stages: 
-- stage: PullScan
-  displayName: Pull image from GitHub and scan it 
+- stage: PullTag
+  displayName: Pull image from Docker, tag and scan it 
   jobs:
   - job: PullScan
-    displayName: Pull image from GitHub and scan it
+    displayName: Pull image from Docker, tag and scan it
     steps:
     
 
-    # # Move created image to the Staging Directory 
-    # - task: CmdLine@2
-    #   inputs:
-    #     script: |
-    #       docker pull $(imageRepository2):$(latestTag)
-    #       docker image save $(imageRepository2):$(latestTag) -o $(Build.ArtifactStagingDirectory)/$(imageRepository2)
+    # Pull base Windows image, tag it with ACR repo name and move it to Staging Directory for publishing 
+    - task: CmdLine@2
+      inputs:
+        script: |
+          docker pull ubuntu:latest
+          docker image save $(containerRegistry)/ubuntu:latest -o $(Build.ArtifactStagingDirectory)
 
-    # Scan image using Snyk App
+        # Scan image using Snyk App
     - task: SnykSecurityScan@0
       inputs:
         serviceConnectionEndpoint: $(serviceConnectionEndpoint)
@@ -58,6 +57,13 @@ stages:
           report*.json
         TargetFolder: $(Build.ArtifactStagingDirectory)/SnykReport    
     
+    # Publish Snyk Report so that it can be downloaded by Security Team
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Snyk report for Security Team
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/SnykReport
+        ArtifactName: SnykReport
+
     # Publish image to Staging Directory so that it can be consumed by Deploy Stage
     - task: PublishBuildArtifacts@1
       displayName: Publish latest image 
@@ -67,45 +73,36 @@ stages:
         Parallel: true
         ParallelCount: 10
         StoreAsTar: true
-    
-    # Publish Snyk Report so that it can be downloaded by Security Team
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Snyk report for Security Team
-      inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)/SnykReport
-        ArtifactName: SnykReport
 
-# Move created image to the Staging Directory 
-    - task: CmdLine@2
-      inputs:
-        script: |
-          docker push $(containerRegistry)/ubuntu:latest
 
-# # Deploy Stage
-# - stage: DeployACR
-#   displayName: Deploy image to ACR
-#   dependsOn: PullScan
-#   condition: succeeded()
-#   jobs:
-#   - deployment: Deploy
-#     displayName: Deploy image to ACR
-#     environment: DeployACR
-#     timeoutInMinutes: 360
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - checkout: none
+# Deploy Stage
+- stage: DeployACR
+  displayName: Deploy image to ACR
+  dependsOn: PullTag
+  condition: succeeded()
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy image to ACR
+    environment: DeployACR
+    timeoutInMinutes: 360
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none
 
-#           # Download Artifact from Build Stage
-#           - download: current
-#             artifact: LatestImage
-#             displayName: Download artifact containing latest image from Build Stage
+          # Download Artifact from Build Stage
+          - download: current
+            artifact: LatestImage
+            displayName: Download artifact containing latest image from Build Stage
 
-#           # Push image to Azure Container Registry (ACR) 
-#           - task: Docker@2
-#             displayName: Push the docker image to ACR
-#             inputs:
-#               command: push
-#               repository: ubuntu:latest
-#               containerRegistry: $(dockerRegistryServiceConnection)
+          # Push image to Azure Container Registry (ACR) 
+          - task: AzureCLI@2
+            displayName: 'Tag image and push it to new ACR repo'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                docker images
+                docker push $(containerRegistry)/ubuntu:latest
