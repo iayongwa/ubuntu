@@ -40,6 +40,8 @@ stages:
           export SNYK_TOKEN=f1a48fac-e974-4a24-b0c7-39b3da07794f
           echo $SNYK_TOKEN
           snyk auth $SNYK_TOKEN
+          npm install -g npm
+          npm install -g snyk snyk-to-html
           snyk container test ubuntu:latest
           snyk container monitor ubuntu:latest
 
