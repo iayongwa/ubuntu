@@ -34,17 +34,31 @@ stages:
       inputs:
         script: |
           docker pull ubuntu:latest
-      
-    # Scan image using Snyk App
-    - task: SnykSecurityScan@0
+
+    # Scan image using Snyk commands 
+    - task: AzureCLI@2
+      displayName: 'Scan image using Snyk commands'
       inputs:
-        serviceConnectionEndpoint: $(serviceConnectionEndpoint)
-        testType: 'container'
-        dockerImageName: ubuntu
-        monitorOnBuild: true
-        failOnIssues: false
-     #   projectName: $(projectName)
-     #   organization: $(organization)
+        azureSubscription: $(serviceConnectionEndpoint)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          export SNYK_TOKEN=f1a48fac-e974-4a24-b0c7-39b3da07794f
+          echo $SNYK_TOKEN
+          snyk auth $SNYK_TOKEN
+          snyk container test ubuntu:latest
+          snyk container monitor ubuntu:latest
+
+    # # Scan image using Snyk App
+    # - task: SnykSecurityScan@0
+    #   inputs:
+    #     serviceConnectionEndpoint: $(serviceConnectionEndpoint)
+    #     testType: 'container'
+    #     dockerImageName: ubuntu
+    #     monitorOnBuild: true
+    #     failOnIssues: false
+    #  #   projectName: $(projectName)
+    #  #   organization: $(organization)
 
     # Copy the Snyk scan report to Staging Directory
     - task: CopyFiles@2
