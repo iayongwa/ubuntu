@@ -69,7 +69,7 @@ stages:
       displayName: 'Push it to new ACR repo'
       inputs:
         azureSubscription: $(azureSubscription)
-        scriptType: pscore
+        scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
           docker images
