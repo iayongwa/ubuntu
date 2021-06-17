@@ -40,10 +40,10 @@ stages:
           snyk auth $(SNYK_TOKEN)
           npm install -g npm
           npm install -g snyk snyk-to-html
-          snyk test --severity-threshold=low --docker ubuntu:latest --json > SnykReport.json
-          snyk-to-html -i SnykReport.json -o SnykReport.html
-          snyk test -i SnykReport.json -o $(Build.ArtifactStagingDirectory)
+          snyk test --severity-threshold=low --docker ubuntu:latest 
           snyk container monitor ubuntu:latest
+          snyk test --json > SnykReport.json
+          snyk test -i SnykReport.json -o $(Build.ArtifactStagingDirectory)
 
     # # Scan image using Snyk App
     # - task: SnykSecurityScan@0
