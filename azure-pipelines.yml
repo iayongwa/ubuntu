@@ -72,8 +72,8 @@ stages:
         scriptType: ps
         scriptLocation: inlineScript
         inlineScript: |
-            docker images
-            docker push $(containerRegistry)/ubuntu:latest
+          docker images
+          docker push $(containerRegistry)/ubuntu:latest
 
 #     # Publish image to Staging Directory so that it can be consumed by Deploy Stage
 #     - task: PublishBuildArtifacts@1
