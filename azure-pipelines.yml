@@ -66,10 +66,10 @@ stages:
 
     # Push image to Azure Container Registry (ACR) 
     - task: AzureCLI@2
-      displayName: 'Tag image and push it to new ACR repo'
+      displayName: 'Push it to new ACR repo'
       inputs:
         azureSubscription: $(azureSubscription)
-        scriptType: ps
+        scriptType: pscore
         scriptLocation: inlineScript
         inlineScript: |
           docker images
