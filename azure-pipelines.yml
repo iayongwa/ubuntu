@@ -35,32 +35,32 @@ stages:
         script: |
           docker pull ubuntu:latest
       
-    #     # Scan image using Snyk App
-    # - task: SnykSecurityScan@0
-    #   inputs:
-    #     serviceConnectionEndpoint: $(serviceConnectionEndpoint)
-    #     testType: 'container'
-    #     dockerImageName: ubuntu
-    #     monitorOnBuild: true
-    #     failOnIssues: false
-    #     projectName: $(projectName)
-    #     organization: $(organization)
+        # Scan image using Snyk App
+    - task: SnykSecurityScan@0
+      inputs:
+        serviceConnectionEndpoint: $(serviceConnectionEndpoint)
+        testType: 'container'
+        dockerImageName: ubuntu
+        monitorOnBuild: true
+        failOnIssues: false
+        projectName: $(projectName)
+        organization: $(organization)
 
-    # # Copy the Snyk scan report to Staging Directory
-    # - task: CopyFiles@2
-    #   displayName: Copy Snyk report to Artifact Staging 
-    #   inputs:
-    #     sourceFolder: $(Agent.TempDirectory)
-    #     Contents: |
-    #       report*.json
-    #     TargetFolder: $(Build.ArtifactStagingDirectory)/SnykReport    
+    # Copy the Snyk scan report to Staging Directory
+    - task: CopyFiles@2
+      displayName: Copy Snyk report to Artifact Staging 
+      inputs:
+        sourceFolder: $(Agent.TempDirectory)
+        Contents: |
+          report*.json
+        TargetFolder: $(Build.ArtifactStagingDirectory)/SnykReport    
     
-    # # Publish Snyk Report so that it can be downloaded by Security Team
-    # - task: PublishBuildArtifacts@1
-    #   displayName: Publish Snyk report for Security Team
-    #   inputs:
-    #     PathtoPublish: $(Build.ArtifactStagingDirectory)/SnykReport
-    #     ArtifactName: SnykReport
+    # Publish Snyk Report so that it can be downloaded by Security Team
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Snyk report for Security Team
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/SnykReport
+        ArtifactName: SnykReport
 
     # Push image to Azure Container Registry (ACR) 
     - task: AzureCLI@2
