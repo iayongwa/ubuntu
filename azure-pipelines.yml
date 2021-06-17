@@ -41,7 +41,6 @@ stages:
           npm install -g npm
           npm install -g snyk snyk-to-html
           snyk container test ubuntu:latest
-          snyk container test --json SnykReport.json
           snyk test ubuntu:latest --json-file-output=$(Build.ArtifactStagingDirectory)
 
     # # Scan image using Snyk App
