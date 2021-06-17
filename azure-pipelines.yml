@@ -35,7 +35,7 @@ stages:
         script: |
           docker pull ubuntu:latest
       
-        # Scan image using Snyk App
+    # Scan image using Snyk App
     - task: SnykSecurityScan@0
       inputs:
         serviceConnectionEndpoint: $(serviceConnectionEndpoint)
@@ -43,8 +43,8 @@ stages:
         dockerImageName: ubuntu
         monitorOnBuild: true
         failOnIssues: false
-        projectName: $(projectName)
-        organization: $(organization)
+     #   projectName: $(projectName)
+     #   organization: $(organization)
 
     # Copy the Snyk scan report to Staging Directory
     - task: CopyFiles@2
