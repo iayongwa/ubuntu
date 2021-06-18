@@ -43,7 +43,6 @@ stages:
           snyk test ubuntu:latest
           snyk container monitor ubuntu:latest
           snyk test --json -o SnykReport.json
-          cp *.json $(Build.ArtifactStagingDirectory)
 
     # # Prerequisite for Snyk Task
     # - task: NodeTool@0
