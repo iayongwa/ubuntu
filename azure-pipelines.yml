@@ -42,7 +42,7 @@ stages:
           npm install -g snyk snyk-to-html
           snyk test ubuntu:latest
           snyk container monitor ubuntu:latest
-          snyk test --json | snyk-to-html -o snykresults.html
+          snyk test --json 
 
     # # Prerequisite for Snyk Task
     # - task: NodeTool@0
@@ -51,16 +51,16 @@ stages:
     #     force32bit: false
     #     checkLatest: true
         
-    # Scan image using Snyk App
-    - task: SnykSecurityScan@0
-      inputs:
-        serviceConnectionEndpoint: $(serviceConnectionEndpoint)
-        testType: 'container'
-        dockerImageName: ubuntu
-        monitorOnBuild: true
-        failOnIssues: false
-     #   projectName: $(projectName)
-     #   organization: $(organization)
+    # # Scan image using Snyk App
+    # - task: SnykSecurityScan@0
+    #   inputs:
+    #     serviceConnectionEndpoint: $(serviceConnectionEndpoint)
+    #     testType: 'container'
+    #     dockerImageName: ubuntu
+    #     monitorOnBuild: true
+    #     failOnIssues: false
+    #  #   projectName: $(projectName)
+    #  #   organization: $(organization)
 
     # Copy the Snyk scan report to Staging Directory
     - task: CopyFiles@2
