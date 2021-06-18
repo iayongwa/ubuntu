@@ -1,4 +1,4 @@
-# Multi-Stage pipeline which builds a Docker image, scan it with Snyk, have Snyk report reviewed by security team before pushing image to ACR 
+# Multi-Stage pipeline which builds a Docker image, scans it with Snyk, have Snyk report reviewed by security team before pushing image to ACR 
 
 name: $(BuildDefinitionName)_$(date:yyyMMdd)$(rev:.r)
 
@@ -16,16 +16,17 @@ pool:
   demands:
   - agent.os -equals Linux 
 
+# Variables group
 variables:
 - group: PRC382-Variables
 
 # Build Stage
 stages: 
-- stage: PullTag
-  displayName: Pull image from Docker, tag and scan it 
+- stage: PullScan
+  displayName: Pull image from Docker 
   jobs:
   - job: PullScan
-    displayName: Pull image from Docker, tag and scan it
+    displayName: Pull image from Docker
     steps:
     
 
@@ -35,7 +36,7 @@ stages:
         script: |
           docker pull ubuntu:latest
 
-    # Scan image using Snyk commands
+    # Scan and monitor image using Snyk commands
     - bash: |
           snyk auth $(SNYK_TOKEN)
           npm install -g npm
