@@ -44,16 +44,23 @@ stages:
           snyk container monitor ubuntu:latest
           cp *.json $(Build.ArtifactStagingDirectory)
 
-    # # Scan image using Snyk App
-    # - task: SnykSecurityScan@0
-    #   inputs:
-    #     serviceConnectionEndpoint: $(serviceConnectionEndpoint)
-    #     testType: 'container'
-    #     dockerImageName: ubuntu
-    #     monitorOnBuild: true
-    #     failOnIssues: false
-    #  #   projectName: $(projectName)
-    #  #   organization: $(organization)
+    # Prerequisite for Snyk Task
+    - task: NodeTool@0
+      inputs:
+        versionSpec: 6.x
+        force32bit: false
+        checkLatest: true
+        
+    # Scan image using Snyk App
+    - task: SnykSecurityScan@0
+      inputs:
+        serviceConnectionEndpoint: $(serviceConnectionEndpoint)
+        testType: 'container'
+        dockerImageName: ubuntu
+        monitorOnBuild: true
+        failOnIssues: false
+     #   projectName: $(projectName)
+     #   organization: $(organization)
 
     # Copy the Snyk scan report to Staging Directory
     - task: CopyFiles@2
