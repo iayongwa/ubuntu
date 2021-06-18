@@ -40,7 +40,8 @@ stages:
           snyk auth $(SNYK_TOKEN)
           npm install -g npm
           npm install -g snyk snyk-to-html
-          snyk container test ubuntu:latest --json > SnykReport.json
+          snyk test ubuntu:latest --json > SnykReport.json
+          snyk monitor ubuntu:latest
 
     # # Scan image using Snyk App
     # - task: SnykSecurityScan@0
