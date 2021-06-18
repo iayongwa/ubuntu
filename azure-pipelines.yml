@@ -42,7 +42,6 @@ stages:
           npm install -g snyk snyk-to-html
           snyk container test ubuntu:latest --json
           snyk container monitor ubuntu:latest
-          snyk test --docker ubuntu:latest --json-file-output=$(Build.ArtifactStagingDirectory)
 
     # # Prerequisite for Snyk Task
     # - task: NodeTool@0
@@ -62,21 +61,21 @@ stages:
     #  #   projectName: $(projectName)
     #  #   organization: $(organization)
 
-    # Copy the Snyk scan report to Staging Directory
-    - task: CopyFiles@2
-      displayName: Copy Snyk report to Artifact Staging 
-      inputs:
-        sourceFolder: $(Agent.TempDirectory)
-        Contents: |
-          *.json
-        TargetFolder: $(Build.ArtifactStagingDirectory)/SnykReport    
+    # # Copy the Snyk scan report to Staging Directory
+    # - task: CopyFiles@2
+    #   displayName: Copy Snyk report to Artifact Staging 
+    #   inputs:
+    #     sourceFolder: $(Agent.TempDirectory)
+    #     Contents: |
+    #       *.json
+    #     TargetFolder: $(Build.ArtifactStagingDirectory)/SnykReport    
     
-    # Publish Snyk Report so that it can be downloaded by Security Team
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Snyk report for Security Team
-      inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)
-        ArtifactName: SnykReport
+    # # Publish Snyk Report so that it can be downloaded by Security Team
+    # - task: PublishBuildArtifacts@1
+    #   displayName: Publish Snyk report for Security Team
+    #   inputs:
+    #     PathtoPublish: $(Build.ArtifactStagingDirectory)
+    #     ArtifactName: SnykReport
 
     # Push image to Azure Container Registry (ACR) 
     - task: AzureCLI@2
