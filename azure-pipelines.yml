@@ -42,6 +42,7 @@ stages:
           npm install -g snyk snyk-to-html
           snyk test ubuntu:latest --json > SnykReport.json
           snyk container monitor ubuntu:latest
+          cp $(Agent.TempDirectory)/SnykReport.json $(Build.ArtifactStagingDirectory)
 
     # # Scan image using Snyk App
     # - task: SnykSecurityScan@0
