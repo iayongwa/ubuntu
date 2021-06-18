@@ -35,14 +35,14 @@ stages:
         script: |
           docker pull ubuntu:latest
 
-    # Scan image using Snyk commands
-    - bash: |
-          snyk auth $(SNYK_TOKEN)
-          npm install -g npm
-          npm install -g snyk snyk-to-html
-          snyk test ubuntu:latest --json > SnykReport.json
-          snyk container monitor ubuntu:latest
-          cp *.json $(Build.ArtifactStagingDirectory)
+    # # Scan image using Snyk commands
+    # - bash: |
+    #       snyk auth $(SNYK_TOKEN)
+    #       npm install -g npm
+    #       npm install -g snyk snyk-to-html
+    #       snyk test ubuntu:latest --json > SnykReport.json
+    #       snyk container monitor ubuntu:latest
+    #       cp *.json $(Build.ArtifactStagingDirectory)
 
     # Prerequisite for Snyk Task
     - task: NodeTool@0
