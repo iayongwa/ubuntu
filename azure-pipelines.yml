@@ -42,7 +42,7 @@ stages:
           npm install -g snyk snyk-to-html
           snyk container test ubuntu:latest --json
           snyk container monitor ubuntu:latest
-          snyk test --docker ubuntu:latest --json-file-output=$(Agent.TempDirectory)/snykreport.json
+          snyk test --docker ubuntu:latest --json-file-output=$(Build.ArtifactStagingDirectory)
 
     # # Prerequisite for Snyk Task
     # - task: NodeTool@0
