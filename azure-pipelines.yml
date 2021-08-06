@@ -95,5 +95,6 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
+          az acr login --name $(containerRegistry3)
           docker images
           docker push $(containerRegistry3)/ubuntu:latest
