@@ -17,7 +17,7 @@ pr: none
 
 # Linux OS self-hosted Agent Pool
 pool: 
-  name: Selfhosted-PRC382-AKS
+  name: Selfhosted-PRC382-AKSPlatform-AustraliaEast
   demands:
   - agent.os -equals Linux 
 
@@ -28,28 +28,29 @@ variables:
 # Build Stage
 stages: 
 - stage: PullScan
-  displayName: Pull image from Docker 
+  displayName: Pull image specified in GitHub's Dockerfile, scan it and push it to ACR 
   jobs:
   - job: PullScan
-    displayName: Pull image from Docker
+    displayName: Pull image specified in GitHub's Dockerfile
     steps:
     - checkout: self
 #   - checkout: MyGitHubRepo
     
 
-    # Pull base Windows image, tag it with ACR repo name and move it to Staging Directory for publishing 
+    # Pull base Linux image specified in GitHub's Dockerfile 
     - task: CmdLine@2
+      displayName: Pull base Linux image specified in GitHub's Dockerfile
       inputs:
         script: |
           docker pull ubuntu:latest
 
-    # Scan and monitor image using Snyk commands
-    - bash: |
-          snyk auth $(SNYK_TOKEN)
-          npm install -g npm
-          npm install -g snyk snyk-to-html
-          snyk container test ubuntu:latest --json
-          snyk container monitor ubuntu:latest
+    # # Scan and monitor image using Snyk commands
+    # - bash: |
+    #       snyk auth $(SNYK_TOKEN)
+    #       npm install -g npm
+    #       npm install -g snyk snyk-to-html
+    #       snyk container test ubuntu:latest --json
+    #       snyk container monitor ubuntu:latest
 
     # # Prerequisite for Snyk Task
     # - task: NodeTool@0
@@ -58,16 +59,17 @@ stages:
     #     force32bit: false
     #     checkLatest: true
         
-    # # Scan image using Snyk App
-    # - task: SnykSecurityScan@0
-    #   inputs:
-    #     serviceConnectionEndpoint: $(serviceConnectionEndpoint)
-    #     testType: 'container'
-    #     dockerImageName: ubuntu
-    #     monitorOnBuild: true
-    #     failOnIssues: false
-    #  #   projectName: $(projectName)
-    #  #   organization: $(organization)
+    # Scan image using Snyk App
+    - task: SnykSecurityScan@0
+      inputs:
+        serviceConnectionEndpoint: $(serviceConnectionEndpoint)
+        testType: 'container'
+        dockerImageName: ubuntu
+        monitorOnBuild: true
+        failOnIssues: false
+        projectName: 'rt_ist_aks_poc'
+        organization: '5b84ba14-9267-4ea8-8223-ebbbf98277ac'
+       # additionalArguments: 'cccc'
 
     # # Copy the Snyk scan report to Staging Directory
     # - task: CopyFiles@2
@@ -87,11 +89,11 @@ stages:
 
     # Push image to Azure Container Registry (ACR) 
     - task: AzureCLI@2
-      displayName: 'Push it to new ACR repo'
+      displayName: 'Push image to ACR repo'
       inputs:
         azureSubscription: $(azureSubscription)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
           docker images
-          docker push $(containerRegistry)/ubuntu:latest
+          docker push $(containerRegistry3)/ubuntu:latest
