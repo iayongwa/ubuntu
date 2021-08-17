@@ -59,18 +59,18 @@ stages:
     #     force32bit: false
     #     checkLatest: true
         
-    # # Scan image using Snyk App
-    # - task: SnykSecurityScan@0
-    #   inputs:
-    #     serviceConnectionEndpoint: $(serviceConnectionEndpoint)
-    #     testType: 'container'
-    #     dockerImageName: ubuntu
-    #     monitorOnBuild: true
-    #     failOnIssues: false
-    ##    projectName: 'rt_ist_aks_nonprod'
-    #     projectName: 'rt_ist_aks'
-    #     organization: 'caaf64d1-a29d-4a99-b21a-35070251b702'
-    #    # additionalArguments: 'cccc'
+    # Scan image using Snyk App
+    - task: SnykSecurityScan@0
+      inputs:
+        serviceConnectionEndpoint: $(serviceConnectionEndpoint)
+        testType: 'container'
+        dockerImageName: ubuntu
+        monitorOnBuild: true
+        failOnIssues: false
+    #    projectName: 'rt_ist_aks_nonprod'
+        projectName: 'rt_ist_aks'
+        organization: 'caaf64d1-a29d-4a99-b21a-35070251b702'
+       # additionalArguments: 'cccc'
 
     # # Copy the Snyk scan report to Staging Directory
     # - task: CopyFiles@2
