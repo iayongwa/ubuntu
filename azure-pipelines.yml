@@ -67,9 +67,10 @@ stages:
         dockerImageName: ubuntu
         monitorOnBuild: true
         failOnIssues: false
-    #    projectName: 'rt_ist_aks_nonprod'
-        projectName: 'rt_ist_aks'
-        organization: 'caaf64d1-a29d-4a99-b21a-35070251b702'
+        projectName: 'rt_ist_aks_nonprod'
+   #    projectName: 'rt_ist_aks'
+   #    organization: 'caaf64d1-a29d-4a99-b21a-35070251b702'
+        organization: 3dd11aa4-2502-483a-beeb-186698fb818b
        # additionalArguments: 'cccc'
 
     # # Copy the Snyk scan report to Staging Directory
