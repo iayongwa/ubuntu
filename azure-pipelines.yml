@@ -7,17 +7,17 @@ trigger: none
 
 resources:
   repositories:
-#    - repository: 'MyGitHubRepo' # Any name you want to give the repo of your source code. This will be used be used in the checkout step.
-#      type: github
-#      endpoint: 'MyGitHubServiceConnection'  # Substitute it with name of the service connection to GitHub or external source
-#      name: 'MyGitHubOrgOrUser/MyGitHubRepo'    # Name of Organization or GitHub user / GitHubrepo name
-    - repository: self
+   - repository: 'MyGitHubRepo' # Any name you want to give the repo of your source code. This will be used be used in the checkout step.
+     type: github
+     endpoint: 'GitHub'  # Substitute it with name of the service connection to GitHub or external source
+     name: 'iayongwa/ubuntu'    # Name of Organization or GitHub user / GitHubrepo name
+   # - repository: self
 
 pr: none
 
 # Linux OS self-hosted Agent Pool
 pool: 
-  name: Selfhosted-PRC382-AKSPlatform-AustraliaEast
+  name: Selfhosted-IDev-PRC382
   demands:
   - agent.os -equals Linux 
 
@@ -33,8 +33,8 @@ stages:
   - job: PullScan
     displayName: Pull image specified in GitHub's Dockerfile
     steps:
-    - checkout: self
-#   - checkout: MyGitHubRepo
+#    - checkout: self
+    - checkout: MyGitHubRepo
     
 
     # Pull base Linux image specified in GitHub's Dockerfile 
@@ -93,10 +93,10 @@ stages:
     - task: AzureCLI@2
       displayName: 'Push image to ACR repo'
       inputs:
-        azureSubscription: $(azureSubscription)
+        azureSubscription: $(azureSubscription1)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az acr login --name $(containerRegistry3)
+          az acr login --name $(containerRegistry1)
           docker images
-          docker push $(containerRegistry3)/ubuntu:latest
+          docker push $(containerRegistry1)/ubuntu:latest
