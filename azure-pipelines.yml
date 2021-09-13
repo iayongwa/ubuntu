@@ -97,6 +97,7 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
+          sudo apt-get install azure-cli
           az acr login --name $(containerRegistry1)
           docker images
           docker push $(containerRegistry1)/ubuntu:latest
