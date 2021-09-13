@@ -99,4 +99,4 @@ stages:
         inlineScript: |
           az acr login --name $(containerRegistry1)
           docker images
-          docker push $(containerRegistry3)/ubuntu:latest
+          docker push $(containerRegistry1)/ubuntu:latest
