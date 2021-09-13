@@ -100,4 +100,4 @@ stages:
           az acr login --name $(containerRegistry1)
           docker images
           docker tag ubuntu/latest $(containerRegistry1)/ubuntu:latest
-          docker push acrrtidevsprc38201.azurecr.io/ubuntu:latest
+          docker push $(containerRegistry1)/ubuntu:latest
