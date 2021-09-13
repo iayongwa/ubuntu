@@ -93,11 +93,10 @@ stages:
     - task: AzureCLI@2
       displayName: 'Push image to ACR repo'
       inputs:
-        azureSubscription: $(azureSubscription)
+        azureSubscription: $(azureSubscription1)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az acr login --name $(containerRegistry3)
+          az acr login --name $(containerRegistry1)
           docker images
-          docker tag ubuntu:latest $(containerRegistry3)/ubuntu:latest
           docker push $(containerRegistry3)/ubuntu:latest
