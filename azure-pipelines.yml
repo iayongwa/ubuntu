@@ -1,4 +1,4 @@
-# Multi-Stage pipeline which builds a Docker image, scans it with Snyk, have Snyk report reviewed by security team before pushing image to ACR 
+# Multi-Stage EXTREPO-ACR-PRC382-Linux pipeline which builds a Docker image, scans it with Snyk, have Snyk report reviewed by security team before pushing image to ACR 
 
 name: $(BuildDefinitionName)_$(date:yyyMMdd)$(rev:.r)
 
